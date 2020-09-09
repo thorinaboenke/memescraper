@@ -4,7 +4,6 @@ const Stream = require('stream').Transform;
 const fs = require('fs');
 const request = require('request-promise');
 const $ = require('cheerio');
-const puppeteer = require('puppeteer');
 const Axios = require('axios');
 
 // page URL for scraping content
@@ -14,10 +13,28 @@ let imageUrl =
   'https://memegen.link/bender/your_text/goes_here.jpg?preview=true&watermark=none&share=true';
 // set the name for the directory to be used for creating folder and filenames
 let directory = './memes/';
-// create Array with imageNames meme1-10 to be used in function for file download
-let imageNames = [];
-for (i = 0; i < 10; i++) {
-  imageNames.push(directory + 'meme' + `${i + 1}` + '.jpg');
+
+const imageNumber = 20;
+
+// function to add foldername to .gitignore
+function addFolderToGitIgnore(FolderName) {
+  // use regex to remove prefixes that are not character, but leave the last /
+  let FolderNameTrim = FolderName.replace(/^\W*/, '');
+  fs.appendFile('.gitignore', `\n${FolderNameTrim}`, function (err) {
+    if (err) return console.log(err);
+    console.log(`The folder ${FolderNameTrim} was added to .gitignore`);
+  });
+}
+// the goal is to extact a meaningful filename from the url to append to meme1 for filenaming
+//get everything between link/ and .jpg and replace everything that is not a character with _
+function extractName(string) {
+  const name = string.substring(
+    string.lastIndexOf('link/') + 4,
+    string.lastIndexOf('.jpg'),
+  );
+  const nameWithUnderscores = name.replace(/\W/g, '_');
+  console.log(nameWithUnderscores);
+  return nameWithUnderscores;
 }
 
 // function to downloadfile from url
@@ -42,6 +59,9 @@ async function downloadImage(MyUrl, MyPath) {
 
 //make directory
 fs.mkdirSync(directory);
+// add directory to gitignore
+addFolderToGitIgnore(directory);
+
 // http get request with request-promise, gets the full html content
 request(pageUrl)
   .then(function (html) {
@@ -57,10 +77,21 @@ request(pageUrl)
     $('.meme-img', html).each(function (i, e) {
       imageUrls.push(prefix + $(this).attr('src'));
     });
-    const tenUrls = imageUrls.slice(1, 11);
-    console.log(tenUrls);
-    console.log(imageNames);
-    for (i = 0; i < 10; i++) {
+    const tenUrls = imageUrls.slice(1, imageNumber + 1);
+    // generate image names here
+
+    let imageNames = [];
+    for (i = 0; i < imageNumber; i++) {
+      imageNames.push(
+        directory +
+          'meme' +
+          `${i + 1}_` +
+          `${extractName(tenUrls[i])}` +
+          '.jpg',
+      );
+    }
+
+    for (i = 0; i < imageNumber; i++) {
       downloadImage(tenUrls[i], imageNames[i]);
     }
   })
