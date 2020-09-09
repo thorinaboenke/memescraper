@@ -29,9 +29,9 @@ function askNumber() {
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿`;
 
   const imageNumber = readline.question(
-    `How many memes would you like to download? Please enter a number between 1 and 99: `,
+    `How many memes would you like to download? Please enter a number between 1 and 20: `,
   );
-  if (0 < parseInt(imageNumber, 10) && parseInt(imageNumber, 10) < 100) {
+  if (0 < parseInt(imageNumber, 10) && parseInt(imageNumber, 10) < 21) {
     //console.log(pikachu);
     console.log(`Downloading ${imageNumber} great memes.`);
     return parseInt(imageNumber, 10);
@@ -120,32 +120,43 @@ request(pageUrl)
       );
     }
 
-    const symbol = '.';
-    const total = 100;
-    const chunks = imageNames.length;
-    const portion = Math.round(total / chunks);
+    const symbol = '\u2588'; //unicode character for filled square
+    const restSymbol = '#';
+    const total = 50;
+    const chunks = imageNames.length; //number of downloads
+    const portion = total / chunks; //devide 100% by number of donwloads
     let barPortion = '';
     for (i = 0; i < portion / 2; i++) {
       barPortion += symbol;
     }
     let bar = '';
-    console.log(total, chunks, portion, barPortion, symbol);
 
     for (let i = 0; i < imageNames.length; i++) {
       setTimeout(function () {
         downloadImage(tenUrls[i], imageNames[i]);
+        let indicator = new Array(Math.round(portion * i))
+          .fill(symbol)
+          .join('');
+        let rest = new Array(total - indicator.length)
+          .fill(restSymbol)
+          .join('');
         bar += barPortion;
         process.stdout.clearLine(); // clear current text
-        process.stdout.cursorTo(0);
-        process.stdout.write(`Download in progress: ${portion * i}% ${bar}`);
+        process.stdout.cursorTo(0); //move cursor to the left
+        process.stdout.write(
+          `Download in progress: ${
+            Math.round(100 / chunks) * i
+          }% ${indicator}${rest}`,
+        );
         if (i === imageNames.length - 1) {
-          process.stdout.clearLine(); // clear current text
-          process.stdout.cursorTo(0);
-          process.stdout.write(`Download has finished: 100% ${bar}`);
-        }
+          //for last iteration print completed message
+          let completed = new Array(total).fill(symbol).join('');
 
-        //process.stdout.write(`\r[${dots}${empty}] ${i * 5}%`)
-      }, i * 100);
+          process.stdout.clearLine();
+          process.stdout.cursorTo(0);
+          process.stdout.write(`Download has finished: 100% ${completed}`);
+        }
+      }, i * 100); //this sets timeout for each iteration, decrease for more iterations?
     }
 
     //
