@@ -40,26 +40,30 @@ async function downloadImage(MyUrl, MyPath) {
   });
 }
 
-//define the function to download content
-
+//make directory
+fs.mkdirSync(directory);
 // http get request with request-promise, gets the full html content
-request(pageUrl).then(function (html) {
-  // initialize array to hold the image URLS
-  // query the html with cheerio for the urls
-  const imageUrls = [];
+request(pageUrl)
+  .then(function (html) {
+    // initialize array to hold the image URLS
+    // query the html with cheerio for the urls
+    const imageUrls = [];
 
-  const prefix = 'https://memegen.link';
-  const selector = `('.meme-img', html).attr('src'))`;
-  //Cheerio query to push image URLS to url array
-  //imageUrls.push(prefix + $('.meme-img', html).attr('src')); // -> gets 10x first url
+    const prefix = 'https://memegen.link';
+    const selector = `('.meme-img', html).attr('src'))`;
+    //Cheerio query to push image URLS to url array
+    //imageUrls.push(prefix + $('.meme-img', html).attr('src')); // -> gets 10x first url
 
-  $('.meme-img', html).each(function (i, e) {
-    imageUrls.push(prefix + $(this).attr('src'));
+    $('.meme-img', html).each(function (i, e) {
+      imageUrls.push(prefix + $(this).attr('src'));
+    });
+    const tenUrls = imageUrls.slice(1, 11);
+    console.log(tenUrls);
+    console.log(imageNames);
+    for (i = 0; i < 10; i++) {
+      downloadImage(tenUrls[i], imageNames[i]);
+    }
+  })
+  .catch(function (err) {
+    console.log(err);
   });
-  const tenUrls = imageUrls.slice(1, 11);
-  console.log(tenUrls);
-  console.log(imageNames);
-  for (i = 0; i < 10; i++) {
-    downloadImage(tenUrls[i], imageNames[i]);
-  }
-});
