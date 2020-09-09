@@ -7,14 +7,11 @@ const $ = require('cheerio');
 const Axios = require('axios');
 const readline = require('readline-sync');
 
-// page URL for scraping content
+// define page URL for scraping content
 let pageUrl = 'https://memegen.link/examples';
-// image URL of first image for testing purposes
-let imageUrl =
-  'https://memegen.link/bender/your_text/goes_here.jpg?preview=true&watermark=none&share=true';
 // set the name for the directory to be used for creating folder and filenames
 let directory = './memes/';
-// function to ask the user how many memes he wants to download, save return to image number
+// function to ask the user for input (1-99), save return to imageNumber
 function askNumber() {
   const pikachu = `⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⣠⣤⣶⣶ 
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⢰⣿⣿⣿⣿ 
@@ -39,7 +36,7 @@ function askNumber() {
     console.log(`Downloading ${imageNumber} great memes.`);
     return parseInt(imageNumber, 10);
   } else {
-    console.log('Sorry, thats not a valid input.');
+    console.log('Sorry, that is not a valid input.');
     askNumber();
   }
 }
@@ -65,7 +62,7 @@ function extractName(string) {
   const nameWithUnderscores = name
     .replace(/\W/g, '_')
     .replace('_your_text_goes_here', '');
-  console.log(nameWithUnderscores);
+  //console.log(nameWithUnderscores);
   return nameWithUnderscores;
 }
 
@@ -123,9 +120,35 @@ request(pageUrl)
       );
     }
 
-    for (i = 0; i < imageNumber; i++) {
-      downloadImage(tenUrls[i], imageNames[i]);
+    const symbol = '.';
+    const total = 100;
+    const chunks = imageNames.length;
+    const portion = Math.round(total / chunks);
+    let barPortion = '';
+    for (i = 0; i < portion / 2; i++) {
+      barPortion += symbol;
     }
+    let bar = '';
+    console.log(total, chunks, portion, barPortion, symbol);
+
+    for (let i = 0; i < imageNames.length; i++) {
+      setTimeout(function () {
+        downloadImage(tenUrls[i], imageNames[i]);
+        bar += barPortion;
+        process.stdout.clearLine(); // clear current text
+        process.stdout.cursorTo(0);
+        process.stdout.write(`Download in progress: ${portion * i}% ${bar}`);
+        if (i === imageNames.length - 1) {
+          process.stdout.clearLine(); // clear current text
+          process.stdout.cursorTo(0);
+          process.stdout.write(`Download has finished: 100% ${bar}`);
+        }
+
+        //process.stdout.write(`\r[${dots}${empty}] ${i * 5}%`)
+      }, i * 100);
+    }
+
+    //
   })
   .catch(function (err) {
     console.log(err);
