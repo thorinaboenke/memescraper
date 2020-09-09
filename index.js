@@ -5,6 +5,7 @@ const fs = require('fs');
 const request = require('request-promise');
 const $ = require('cheerio');
 const Axios = require('axios');
+const readline = require('readline-sync');
 
 // page URL for scraping content
 let pageUrl = 'https://memegen.link/examples';
@@ -13,8 +14,37 @@ let imageUrl =
   'https://memegen.link/bender/your_text/goes_here.jpg?preview=true&watermark=none&share=true';
 // set the name for the directory to be used for creating folder and filenames
 let directory = './memes/';
+// function to ask the user how many memes he wants to download, save return to image number
+function askNumber() {
+  const pikachu = `⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⣠⣤⣶⣶ 
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⢰⣿⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣀⣀⣾⣿⣿⣿⣿ 
+⣿⣿⣿⣿⣿⡏⠉⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿ 
+⣿⣿⣿⣿⣿⣿⠀⠀⠀⠈⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠉⠁⠀⣿ 
+⣿⣿⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠙⠿⠿⠿⠻⠿⠿⠟⠿⠛⠉⠀⠀⠀⠀⠀⣸⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⣴⣿⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⢰⣹⡆⠀⠀⠀⠀⠀⠀⣭⣷⠀⠀⠀⠸⣿⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠈⠉⠀⠀⠤⠄⠀⠀⠀⠉⠁⠀⠀⠀⠀⢿⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⢾⣿⣷⠀⠀⠀⠀⡠⠤⢄⠀⠀⠀⠠⣿⣿⣷⠀⢸⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⡀⠉⠀⠀⠀⠀⠀⢄⠀⢀⠀⠀⠀⠀⠉⠉⠁⠀⠀⣿⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿ 
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿`;
 
-const imageNumber = 20;
+  const imageNumber = readline.question(
+    `How many memes would you like to download? Please enter a number between 1 and 99: `,
+  );
+  if (0 < parseInt(imageNumber, 10) && parseInt(imageNumber, 10) < 100) {
+    //console.log(pikachu);
+    console.log(`Downloading ${imageNumber} great memes.`);
+    return parseInt(imageNumber, 10);
+  } else {
+    console.log('Sorry, thats not a valid input.');
+    askNumber();
+  }
+}
+
+const imageNumber = askNumber();
 
 // function to add foldername to .gitignore
 function addFolderToGitIgnore(FolderName) {
@@ -32,7 +62,9 @@ function extractName(string) {
     string.lastIndexOf('link/') + 4,
     string.lastIndexOf('.jpg'),
   );
-  const nameWithUnderscores = name.replace(/\W/g, '_');
+  const nameWithUnderscores = name
+    .replace(/\W/g, '_')
+    .replace('_your_text_goes_here', '');
   console.log(nameWithUnderscores);
   return nameWithUnderscores;
 }
@@ -84,8 +116,8 @@ request(pageUrl)
     for (i = 0; i < imageNumber; i++) {
       imageNames.push(
         directory +
-          'meme' +
-          `${i + 1}_` +
+          'meme_' +
+          `${i + 1}` +
           `${extractName(tenUrls[i])}` +
           '.jpg',
       );
