@@ -4,6 +4,8 @@ UpLeveled 2020-09-09 node.js Meme Scraper
 
 downloads memes from 'https://memegen.link/examples'
 
+[![Run on Repl.it](https://repl.it/badge/github/thorinaboenke/memescraper)](https://repl.it/github/thorinaboenke/memescraper)
+
 Performs the following steps:
 
 - ask user for number of memes to download and directory to save them in
