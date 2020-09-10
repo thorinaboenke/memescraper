@@ -6,7 +6,9 @@ downloads memes from 'https://memegen.link/examples'
 
 [![Run on Repl.it](https://repl.it/badge/github/thorinaboenke/memescraper)](https://repl.it/github/thorinaboenke/memescraper)
 
-Performs the following steps:
+'''sh
+node index.js
+'''
 
 - ask user for number of memes to download and directory to save them in
 - add directory name to .gitignore
@@ -15,3 +17,15 @@ Performs the following steps:
 - return queried meme URLS to an array
 - generate filenames from the URLS
 - use array of URLS and Array of names for downloading images with Axios (node package)
+
+# memegenerator
+
+creates memes from https://memegen.link
+
+'''sh
+node memegenerator-index.js
+'''
+
+- Choose between 35 different memes
+- Enter two lines of text
+- download custom meme
