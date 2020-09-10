@@ -33,7 +33,9 @@ request(pageUrl)
           imageUrls.push(prefix + elm);
         });*/
       $('.meme-img', html).each(function (i, e) {
-        imageUrls.push(prefix + $(this).attr('src'));
+        for (let i = 0; i < 10; i++) {
+          imageUrls.push(prefix + $(this).attr('src'));
+        }
       });
       console.log(imageUrls);
     }
