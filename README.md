@@ -2,6 +2,8 @@
 
 UpLeveled 2020-09-09 node.js Meme Scraper
 
+Link to GitHub: https://github.com/thorinaboenke/memescraper
+
 Run it on repl.it:
 https://repl.it/@thorinaboenke/memescraper#.replit
 
