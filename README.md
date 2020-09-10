@@ -2,9 +2,12 @@
 
 UpLeveled 2020-09-09 node.js Meme Scraper
 
-downloads memes from 'https://memegen.link/examples'
+Link to GitHub: https://github.com/thorinaboenke/memescraper
 
-[![Run on Repl.it](https://repl.it/badge/github/thorinaboenke/memescraper)](https://repl.it/github/thorinaboenke/memescraper)
+Run it on repl.it:
+https://repl.it/@thorinaboenke/memescraper#.replit
+
+downloads memes from 'https://memegen.link/examples'
 
 '''sh
 node index.js
