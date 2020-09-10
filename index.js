@@ -10,7 +10,28 @@ const readline = require('readline-sync');
 // define page URL for scraping content
 let pageUrl = 'https://memegen.link/examples';
 // set the name for the directory to be used for creating folder and filenames
-let directory = './memes/';
+function askFolder() {
+  const maxLength = 255;
+  let directory = readline.question(
+    'Where would you like to save your memes? Please specify a folder name (can only contain letters, numbers and underscores). The folder will be created in the current directory: ',
+  );
+  if (directory.length > maxLength) {
+    console.log(
+      `Sorry, that's too long. Plese use max ${maxLength} characters: `,
+    );
+    askFolder();
+  } else if (/^\w+$/.test(directory)) {
+    console.log(`Memes will be saved in folder '${directory}'.`);
+    directory = './' + directory + '/';
+    return directory;
+  } else {
+    console.log(
+      'Sorry, that is not a valid input. The folder name can only contain letters, numbers and underscores',
+    );
+    askFolder();
+  }
+}
+let directory = askFolder();
 // function to ask the user for input (1-99), save return to imageNumber
 function askNumber() {
   const pikachu = `⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⣠⣤⣶⣶ 
@@ -31,8 +52,14 @@ function askNumber() {
   const imageNumber = readline.question(
     `How many memes would you like to download? Please enter a number between 1 and 20: `,
   );
-  if (0 < parseInt(imageNumber, 10) && parseInt(imageNumber, 10) < 21) {
-    //console.log(pikachu);
+  if (imageNumber === 1) {
+    console.log(`Downloading ${imageNumber} great meme.`);
+  } else if (
+    /^\d+$/.test(imageNumber) &&
+    1 < parseInt(imageNumber, 10) &&
+    parseInt(imageNumber, 10) < 21
+  ) {
+    console.log(pikachu);
     console.log(`Downloading ${imageNumber} great memes.`);
     return parseInt(imageNumber, 10);
   } else {
@@ -85,10 +112,18 @@ async function downloadImage(MyUrl, MyPath) {
     writer.on('error', reject);
   });
 }
+function makeFolder(directory) {
+  fs.mkdir(directory, function (err) {
+    if (err) {
+      console.error(
+        err,
+        `!!!!! The folder already exists. I'll just add more memes to it i guess.`,
+      );
+    } else console.log(`Created a new folder ${directory}`);
+  });
+}
+makeFolder(directory);
 
-//make directory
-fs.mkdirSync(directory);
-// add directory to gitignore
 addFolderToGitIgnore(directory);
 
 // http get request with request-promise, gets the full html content
