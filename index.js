@@ -1,6 +1,3 @@
-const http = require('http');
-const https = require('https');
-const Stream = require('stream').Transform;
 const fs = require('fs');
 const request = require('request-promise');
 const $ = require('cheerio');
@@ -10,10 +7,11 @@ const readline = require('readline-sync');
 // define page URL for scraping content
 let pageUrl = 'https://memegen.link/examples';
 // set the name for the directory to be used for creating folder and filenames
+// Check if a valid name was entered
 function askFolder() {
   const maxLength = 255;
   let directory = readline.question(
-    'Where would you like to save your memes? Please specify a folder name (can only contain letters, numbers and underscores). The folder will be created in the current directory: ',
+    'Where would you like to save your memes? Please specify a folder name (can only contain letters, numbers and underscores). If the folder does not exist yet in the current directory it will be created: ',
   );
   if (directory.length > maxLength) {
     console.log(
@@ -26,13 +24,13 @@ function askFolder() {
     return directory;
   } else {
     console.log(
-      'Sorry, that is not a valid input. The folder name can only contain letters, numbers and underscores',
+      'Sorry, that is not a valid name. The folder name can only contain letters, numbers and underscores',
     );
     askFolder();
   }
 }
 let directory = askFolder();
-// function to ask the user for input (1-99), save return to imageNumber
+// function to ask the user for input (1-20), save return to imageNumber
 function askNumber() {
   const pikachu = `⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⣠⣤⣶⣶ 
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⢰⣿⣿⣿⣿ 
@@ -52,7 +50,7 @@ function askNumber() {
   const imageNumber = readline.question(
     `How many memes would you like to download? Please enter a number between 1 and 20: `,
   );
-  if (imageNumber === 1) {
+  if (imageNumber === '1') {
     console.log(`Downloading ${imageNumber} great meme.`);
   } else if (
     /^\d+$/.test(imageNumber) &&
@@ -79,7 +77,7 @@ function addFolderToGitIgnore(FolderName) {
     console.log(`The folder ${FolderNameTrim} was added to .gitignore`);
   });
 }
-// the goal is to extact a meaningful filename from the url to append to meme1 for filenaming
+// the goal is to extact a meaningful filename from the url to append to meme1 for filenaming:
 //get everything between link/ and .jpg and replace everything that is not a character with _
 function extractName(string) {
   const name = string.substring(
@@ -93,7 +91,7 @@ function extractName(string) {
   return nameWithUnderscores;
 }
 
-// function to downloadfile from url
+// function to download file from url
 async function downloadImage(MyUrl, MyPath) {
   const url = MyUrl;
   const path = MyPath;
@@ -117,7 +115,7 @@ function makeFolder(directory) {
     if (err) {
       console.error(
         err,
-        `!!!!! The folder already exists. I'll just add more memes to it i guess.`,
+        `!!!!! The folder already exists. I'll just add more memes to it I guess.`,
       );
     } else console.log(`Created a new folder ${directory}`);
   });
@@ -134,7 +132,7 @@ request(pageUrl)
     const imageUrls = [];
 
     const prefix = 'https://memegen.link';
-    const selector = `('.meme-img', html).attr('src'))`;
+    //const selector = `('.meme-img', html).attr('src'))`;
     //Cheerio query to push image URLS to url array
     //imageUrls.push(prefix + $('.meme-img', html).attr('src')); // -> gets 10x first url
 
@@ -191,7 +189,7 @@ request(pageUrl)
           process.stdout.cursorTo(0);
           process.stdout.write(`Download has finished: 100% ${completed}`);
         }
-      }, i * 100); //this sets timeout for each iteration, decrease for more iterations?
+      }, i * 300); //this sets timeout for each iteration, decrease for more iterations?
     }
 
     //
