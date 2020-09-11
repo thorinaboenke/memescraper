@@ -13,6 +13,7 @@ const sourceUrl = 'https://api.memegen.link/images/';
 // make object of reserved URL characters and their replace codes
 function replacer(string) {
   const urlEscapers = {
+    Trump: 'Cheeto in Chief',
     '?': '~q',
     '%': '~p',
     '#': '~h',
