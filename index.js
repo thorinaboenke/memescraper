@@ -15,7 +15,7 @@ function askFolder() {
   );
   if (directory.length > maxLength) {
     console.log(
-      `Sorry, that's too long. Plese use max ${maxLength} characters: `,
+      `Sorry, that's too long. Please use max ${maxLength} characters: `,
     );
     askFolder();
   } else if (/^\w+$/.test(directory)) {
@@ -77,11 +77,11 @@ function addFolderToGitIgnore(FolderName) {
     console.log(`The folder ${FolderNameTrim} was added to .gitignore`);
   });
 }
-// the goal is to extact a meaningful filename from the url to append to meme1 for filenaming:
+// the goal is to extact a meaningful filename from the url  for filenaming:
 //get everything between link/ and .jpg and replace everything that is not a character with _
 function extractName(string) {
   const name = string.substring(
-    string.lastIndexOf('link/') + 4,
+    string.indexOf('link/') + 4,
     string.lastIndexOf('.jpg'),
   );
   const nameWithUnderscores = name
@@ -140,8 +140,8 @@ request(pageUrl)
       imageUrls.push(prefix + $(this).attr('src'));
     });
     const tenUrls = imageUrls.slice(1, imageNumber + 1);
-    // generate image names here
 
+    // generate image names here
     let imageNames = [];
     for (i = 0; i < imageNumber; i++) {
       imageNames.push(
@@ -152,18 +152,18 @@ request(pageUrl)
           '.jpg',
       );
     }
-
-    const symbol = '\u2588'; //unicode character for filled square
-    const restSymbol = '#';
-    const total = 50;
+    // this adds a custom made progress bar
+    const symbol = '\u2588'; //unicode character for filled square == progress
+    const restSymbol = '#'; // == remaining par of the bar
+    const total = 50; // == length of the bar
     const chunks = imageNames.length; //number of downloads
     const portion = total / chunks; //devide 100% by number of donwloads
     let barPortion = '';
     for (i = 0; i < portion / 2; i++) {
       barPortion += symbol;
     }
-    let bar = '';
 
+    // for loop to download from urls and render the corresponding progress after every iteration
     for (let i = 0; i < imageNames.length; i++) {
       setTimeout(function () {
         downloadImage(tenUrls[i], imageNames[i]);
@@ -173,7 +173,7 @@ request(pageUrl)
         let rest = new Array(total - indicator.length)
           .fill(restSymbol)
           .join('');
-        bar += barPortion;
+
         process.stdout.clearLine(); // clear current text
         process.stdout.cursorTo(0); //move cursor to the left
         process.stdout.write(
@@ -189,7 +189,7 @@ request(pageUrl)
           process.stdout.cursorTo(0);
           process.stdout.write(`Download has finished: 100% ${completed}`);
         }
-      }, i * 300); //this sets timeout for each iteration, decrease for more iterations?
+      }, i * 300); //this sets timeout for each iteration to make progress visible, decrease for more iterations?
     }
 
     //
