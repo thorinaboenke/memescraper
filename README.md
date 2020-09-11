@@ -9,9 +9,9 @@ https://repl.it/@thorinaboenke/memescraper#.replit
 
 downloads memes from 'https://memegen.link/examples'
 
-'''sh
+```sh
 \$ node index.js
-'''
+```
 
 - ask user for number of memes to download and directory to save them in
 - add directory name to .gitignore
@@ -25,9 +25,9 @@ downloads memes from 'https://memegen.link/examples'
 
 creates memes from https://memegen.link
 
-'''sh
+```sh
 \$ node memegenerator-index.js
-'''
+```
 
 - Choose between 35 different memes
 - Enter two lines of text
