@@ -5,7 +5,7 @@ UpLeveled 2020-09-09 node.js Meme Scraper
 GitHub: https://github.com/thorinaboenke/memescraper
 
 Run it on repl.it:
-https://repl.it/@thorinaboenke/memescraper#.replit
+https://repl.it/@thorinaboenke/memescraper-1#.replit
 
 Downloads memes from 'https://memegen.link/examples'
 
